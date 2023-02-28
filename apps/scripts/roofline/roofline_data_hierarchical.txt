@@ -1,0 +1,15 @@
+    # some comments about the spcific platform
+
+    # params for plotting roofs
+    memroofs 11.9 10.0 4.6         
+    mem_roof_names 'L2' 'L3' 'DRAM'
+    comproofs 12.3 6.1             
+    comp_roof_names 'FMA' 'No-FMA' 
+
+    # omit the following if only plotting roofs
+    # params for plotting your measured function as points in the graph
+    AI_L2 1.645                  
+    AI_L3 2.587                  
+    AI_DRAM 3.396                
+    FLOPS 1.63 2.07 1.53         
+    labels 'gaussian_blur_ksize9'

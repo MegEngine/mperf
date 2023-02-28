@@ -1,0 +1,3 @@
+[submodule "third_party/libpfm4"]
+	path = third_party/libpfm4
+	url = git@github.com:MegEngine/mperf-libpfm4.git

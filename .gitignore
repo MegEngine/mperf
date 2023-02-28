@@ -1,0 +1,4 @@
+.vscode
+.o
+build*
+ci/workdir

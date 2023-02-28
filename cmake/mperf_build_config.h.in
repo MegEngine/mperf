@@ -1,0 +1,45 @@
+#ifndef _MPERF_BUILD_CONFIG
+#define _MPERF_BUILD_CONFIG
+
+#cmakedefine01 MPERF_WITH_OPENCL
+#cmakedefine01 MPERF_WITH_ADRENO
+#cmakedefine01 MPERF_WITH_MALI
+#cmakedefine01 MPERF_WITH_PFM
+#cmakedefine01 MPERF_AARCH64
+#cmakedefine01 MPERF_ARMV7
+#cmakedefine01 MPERF_X86
+#cmakedefine01 MPERF_WITH_LOGGING
+
+#ifndef MPERF_WITH_OPENCL
+#define MPERF_WITH_OPENCL 0
+#endif
+
+#ifndef MPERF_WITH_ADRENO
+#define MPERF_WITH_ADRENO 0
+#endif
+
+#ifndef MPERF_WITH_MALI
+#define MPERF_WITH_MALI 0
+#endif
+
+#ifndef MPERF_WITH_PFM
+#define MPERF_WITH_PFM 0
+#endif
+
+#ifndef MPERF_AARCH64
+#define MPERF_AARCH64 0
+#endif
+
+#ifndef MPERF_ARMV7
+#define MPERF_ARMV7 0
+#endif
+
+#ifndef MPERF_X86
+#define MPERF_X86 0
+#endif
+
+#ifndef MPERF_WITH_LOGGING
+#define MPERF_WITH_LOGGING 0
+#endif
+
+#endif  // _MPERF_BUILD_CONFIG

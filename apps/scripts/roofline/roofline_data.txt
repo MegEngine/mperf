@@ -1,0 +1,12 @@
+# some comments about the spcific platform
+
+# params for plotting roofs
+memroofs 26.3
+mem_roof_names 'DRAM' 
+comproofs 1159         
+comp_roof_names 'FMA'   
+
+# omit the following if only plotting roofs
+AI 15.5                 
+FLOPS 261               
+labels 'FMA, DRAM'      
