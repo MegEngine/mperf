@@ -109,25 +109,10 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
     更多详细信息请参考 [arm_cpu_tma](apps/cpu_tma_transpose.cpp)。
 
 ## 源码目录结构
-* `apps` 各种使用样例
-  * `apps/scripts/bench_cpu_mem_bw` 运行 `apps/cpu_mem_bw` 和绘制其测试结果的脚本
-  * `apps/scripts/roofline` 绘制多层 Roofline 的脚本
-  * `apps/cpu_info_test.cpp` 获取基础 cpuinfo (大小核数量/主频等)
-  * `apps/cpu_inst_gflops_latency.cpp` 测试 CPU 指令的 throughput/latency
-  * `apps/cpu_mem_bw.cpp` 用于测试各种 micro-kernel 的多级存储带宽
-  * `apps/cpu_stream.cpp` Stream 范式的 micro-kernel 带宽测试
-  * `apps/cpu_spec_dram_bw.cpp` 测试 DRAM 带宽
-  * `apps/cpu_pmu_transpose.cpp` CPU PMU 数据获取
-  * `apps/cpu_tma_transpose.cpp` ARM TMA 分析实例
-  * `apps/gpu_march_probe.cpp` 测试GPU微架构参数(寄存器数量 / warp size / Cache Line 大小)
-  * `apps/gpu_spec_dram_bw.cpp` GPU DRAM 带宽
-  * `apps/gpu_mem_bw.cpp` GPU Cache 带宽
-  * `apps/gpu_adreno_pmu_test.cpp` Adreno GPU PMU 数据获取
-  * `apps/gpu_mali_pmu_test.cpp` Mali GPU PMU 数据获取
-  * `apps/gpu_inst_gflops_latency.cpp` 测试 GPU/OpenCL 指令的 throughput/latency
-* `eca` 搜集和分析 PMU 数据(包括 TMA 分析)
-* `uarch` 一系列基础 micro-benchmark 用于测试CPU/GPU微架构层次的各种常用性能参数
-* `doc` 一些关于 mperf 的 roofline 和 tma 功能如何使用的文档，具体列表请查看 [index](doc/index.md)。
+* `apps` 各种使用样例，详细信息请查看[apps 文档](./apps/README.md)。
+* `eca` 搜集和分析 PMU 数据(包括 TMA 分析)。
+* `uarch` 一系列基础 micro-benchmark 用于测试CPU/GPU微架构层次的各种常用性能参数。
+* `doc` 一些关于 mperf 的 roofline 和 tma 功能如何使用的文档，具体列表请查看 [文档索引](doc/index.md)。
 * `cmake` cmake相关的文件。
 * `common` 一些公共的基础组件。
 * `third_party` mperf 对外依赖的库。 

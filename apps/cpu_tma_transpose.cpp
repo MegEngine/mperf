@@ -881,11 +881,7 @@ int main() {
 #if defined(__aarch64__)
     mperf::tma::MPFTMA mpf_tma(mperf::MPFXPUType::A55);
     // mperf::tma::MPFTMA mpf_tma(mperf::MPFXPUType::A510);
-#else
-    mperf::tma::MPFTMA mpf_tma(mperf::MPFXPUType::HSX_SERVER);
-#endif
 
-#if defined(__aarch64__)
     // clang-format off
     mpf_tma.init({"Frontend_Bound",
                       "Fetch_Latency", 
@@ -920,6 +916,7 @@ int main() {
                           "BR_INDIRECT_Retiring"});
     // clang-format on
 #else
+    mperf::tma::MPFTMA mpf_tma(mperf::MPFXPUType::HSX_SERVER);
     mpf_tma.init(
             {"Frontend_Bound", "Bad_Speculation", "Backend_Bound", "Retiring"});
 #endif
@@ -939,7 +936,6 @@ int main() {
                                                       1, width, height, 1, 1);
 #endif
             res += dst[0];
-            // mpf_tma.sample(1);
         }
 #if ENABLE_TMA
         mpf_tma.sample_and_stop(iter_num);

@@ -110,22 +110,7 @@ mperf support CMake build system and require CMake version upper than 3.15.2, yo
     please see [arm_cpu_tma](apps/cpu_tma_transpose.cpp) for more details.
 
 ## Source Directory Structure
-* `apps` Various user examples.
-  * `apps/scripts/bench_cpu_mem_bw` script to run `apps/cpu_mem_bw` and process the results of `apps/cpu_mem_bw`
-  * `apps/scripts/roofline` script to draw graph of roofline model. 
-  * `apps/cpu_info_test.cpp` get cpu information(Eg. number of big-core/freq)
-  * `apps/cpu_inst_gflops_latency.cpp` measure instruction throughput/latency
-  * `apps/cpu_mem_bw.cpp` measure CPU hierarchical memory bandwidths/latency of micro-kernels
-  * `apps/cpu_stream.cpp` mperf version of John McCalpin's STREAM benchmark
-  * `apps/cpu_spec_dram_bw.cpp` measure dram bandwidth
-  * `apps/cpu_pmu_transpose.cpp` collect data of cpu pmu events
-  * `apps/cpu_tma_transpose.cpp` ARM TMA example
-  * `apps/gpu_march_probe.cpp` get gpu micro-arch parameters(number of register/warp size/Cache Line size)
-  * `apps/gpu_spec_dram_bw.cpp` measure GPU DRAM Bandwidth
-  * `apps/gpu_mem_bw.cpp` measure Bandwidth of GPU multi-level caches
-  * `apps/gpu_adreno_pmu_test.cpp` collect data of Adreno GPU pmu events
-  * `apps/gpu_mali_pmu_test.cpp` collect data of Mali GPU pmu events
-  * `apps/gpu_inst_gflops_latency.cpp` measure gpu/OpenCL instruction throughput/latency
+* `apps` Various user examples, please see [apps doc](./apps/README.md) for more details.
 * `eca` A module for collecting and analyzing PMU events data(Including TMA analysis).
 * `uarch` A set of low-level micro-benchmarks to investigate the basic micro-architectural parameters(uarch) of the target CPU/GPU.
 * `doc` Some documents about roofline and tma usage, please see [index](doc/index.md) for the list.
