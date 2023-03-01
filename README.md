@@ -132,7 +132,7 @@ mperf support CMake build system and require CMake version upper than 3.15.2, yo
 * `cmake` Some cmake relative files.
 * `common` Some common helper functions.
 * `third_party` Some dependent libraries.
-* `linter` OpenCL Linter [TBD].
+* `linter` OpenCL Linter [TBD]. 
 
 ## Tutorial
 * A tutorial about how to optimize matmul to achieve peak performance on ARM A55 core, which will illustrate the basic logic of how to use mperf help your optimization job, please reference [optimize the matmul with the help of mperf](doc/how_to_optimize_matmul/借助mperf进行矩阵乘法极致优化.md). 
