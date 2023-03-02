@@ -15,4 +15,7 @@ target_include_directories(mperf_tma
                            PUBLIC
                            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>
                            $<INSTALL_INTERFACE:include>)
-
+target_include_directories(mperf_tma
+                           PUBLIC
+                           $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+                           $<INSTALL_INTERFACE:include>)

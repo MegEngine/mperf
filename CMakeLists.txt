@@ -109,15 +109,14 @@ if(MPERF_ENABLE_PFM)
 endif()
 
 add_subdirectory(eca/tma)
-target_link_libraries(mperf_tma PRIVATE mperf_xpmu)
 target_include_directories(mperf
                            PUBLIC
                            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>
                            $<INSTALL_INTERFACE:include>)
 target_include_directories(mperf PRIVATE ${PROJECT_SOURCE_DIR}/uarch/gpu/kernels/)
 
-target_link_libraries(mperf PUBLIC mperf_xpmu)
 target_link_libraries(mperf PUBLIC mperf_tma)
+target_link_libraries(mperf PUBLIC mperf_xpmu)
 
 add_subdirectory(apps)
 
