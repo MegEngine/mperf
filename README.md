@@ -43,7 +43,7 @@ mperf support CMake build system and require CMake version upper than 3.15.2, yo
         ```
     * build for arm64 cpu
         ```bash
-        ./android_build.sh -m arm64-v8a
+        ./android_build.sh [-m arm64-v8a] // default is arm64-v8a
         ```
     * build with mali mobile gpu
         ```bash
@@ -61,21 +61,24 @@ mperf support CMake build system and require CMake version upper than 3.15.2, yo
         ```bash
         ./android_build.sh -d [arm64-v8a, armeabi-v7a]
         ```
+    * build with your custom install directory
+        ```bash
+        ./android_build.sh -i /your/custom/cmake/install/prefix
+        ```
 * if you target test OS is linux，if you want to enable pfm add `-DMPERF_ENABLE_PFM=ON` to cmake command
     ```bash
     cmake -S . -B "build-x86" -DMPERF_ENABLE_PFM=ON
     cmake --build "build-x86" --config Release 
     ```
-* after build, some executable files are stored in mperf build_dir/apps directory. And you can install the mperf to your system path or your custom install directory
+* after build, some executable files are stored in mperf build_dir/apps directory. And you can install the mperf to your system path or your custom install directory by
     ```bash
     cmake --build <mperf_build_dir> --target install 
     ```
 * and now, you can use `find_package` command to import the installed mperf, and use like
     ```bash
-    # set(mperf_DIR /path/to/your/installed/mperfConfig.cmake) # uncomment it if cannot find mperfConfig.cmake
+    set(mperf_DIR /path/to/your/installed/mperfConfig.cmake) # Note, it's the dirname of mperfConfig.cmake
     find_package(mperf REQUIRED)
-    target_link_libraries(your_target PRIVATE mperf::mperf_interface_include)
-    target_link_libraries(your_target PRIVATE "/path/to/your/installed/libmperf.a")
+    target_link_libraries(your_target mperf::mperf)
     ```
 * alternatively, `add_subdirectory(mperf)` will incorporate the library directly in to your's CMake project.
 

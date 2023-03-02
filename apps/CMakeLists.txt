@@ -1,7 +1,7 @@
 
 macro(compile_test name)
     add_executable(${name} "${name}.cpp" utils/utils.cpp)
-    target_link_libraries(${name} mperf_interface_include)
+    target_link_libraries(${name} mperf)
 endmacro(compile_test)
 
 message(STATUS "compile cpu basic tests")
@@ -18,7 +18,7 @@ if(ANDROID)
 message(STATUS "compile cpu analysis cases")
 macro(compile_cpu_analysis_cases dir_name binary_name prefix)
     add_executable("${prefix}${binary_name}" "${PROJECT_SOURCE_DIR}/apps/${dir_name}/${binary_name}.cpp" utils/utils.cpp)
-    target_link_libraries("${prefix}${binary_name}" mperf_interface_include)
+    target_link_libraries("${prefix}${binary_name}" mperf)
 endmacro(compile_cpu_analysis_cases)
 
 compile_cpu_analysis_cases(cpu_pmu_analysis fmla arm_cpu_)
@@ -46,7 +46,7 @@ compile_test(gpu_spec_dram_bw)
 message(STATUS "compile gpu analysis cases")
 macro(compile_gpu_analysis_cases dir_name binary_name prefix)
     add_executable("${prefix}${binary_name}" "${PROJECT_SOURCE_DIR}/apps/${dir_name}/${binary_name}.cpp" utils/utils.cpp)
-    target_link_libraries("${prefix}${binary_name}" mperf_interface_include)
+    target_link_libraries("${prefix}${binary_name}" mperf)
 endmacro(compile_gpu_analysis_cases)
 
 if(MPERF_ENABLE_MALI)

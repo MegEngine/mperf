@@ -9,6 +9,8 @@ ADRENO=OFF
 MALI=OFF
 PFM=OFF
 LOG=OFF
+REMOVE_OLD_BUILD=OFF
+INSTALL_PREFIX=/usr/local
 
 READLINK=readlink
 MAKEFILE_TYPE="Ninja"
@@ -25,15 +27,17 @@ function usage() {
     echo "$0 args1 ..."
     echo "available args detail:"
     echo "-d : build with Debug mode, default Release mode"
-    echo "-m : machine arch(arm64-v8a, armeabi-v7a)"
+    echo "-m : machine arch(arm64-v8a, armeabi-v7a), default arm64-v8a"
     echo "-g : mobile gpu vendor(adreno, mali)"
-    echo "-p : enable build with pfm"
-    echo "-l : change default log level"
+    echo "-i : set your custom cmake install prefix, default \"/usr/local\" "
+    echo "-p : enable pfm, default off"
+    echo "-l : enable logging, default off"
+    echo "-r : remove old build dir before make, default off"
     echo "-h : show usage"
     echo "example: $0 -g adreno"
 }
 
-while getopts "dhm:g:lp" arg
+while getopts "dhm:g:i:rlp" arg
 do
     case $arg in
         d)
@@ -48,13 +52,21 @@ do
             echo "build with gpu:$OPTARG"
             GPU_VENDOR=$OPTARG
             ;;
+        i)
+            echo "set your custom cmake install prefix:$OPTARG"
+            INSTALL_PREFIX=$OPTARG
+            ;;
         p)
-            echo "build with pfm"
+            echo "enable pfm"
             PFM=ON
             ;;
         l)
-            echo "build with logging"
+            echo "enable logging"
             LOG=ON
+            ;;
+        r)
+            echo "config REMOVE_OLD_BUILD=true"
+            REMOVE_OLD_BUILD=true
             ;;
         h)
             echo "show usage"
@@ -80,11 +92,19 @@ function cmake_build() {
     BUILD_DIR=$SRC_DIR/build-${ARCH}/
     BUILD_ABI=$1
     BUILD_NATIVE_LEVEL=$2
+    if [ $REMOVE_OLD_BUILD = "true" ]; then
+        echo "remove old build dir"
+        rm -rf ${BUILD_DIR}
+    else
+        echo "strip remove old build"
+    fi
+
     echo "build dir: $BUILD_DIR"
     echo "build ARCH: $ARCH"
     echo "build ABI: $BUILD_ABI"
     echo "build native level: $BUILD_NATIVE_LEVEL"
     echo "BUILD MAKEFILE_TYPE: $MAKEFILE_TYPE"
+    echo "cmake install prefix: $INSTALL_PREFIX"
     echo "create build dir"
     mkdir -p $BUILD_DIR
     cd $BUILD_DIR
@@ -96,11 +116,12 @@ function cmake_build() {
         -DANDROID_ABI=$BUILD_ABI \
         -DANDROID_NATIVE_API_LEVEL=$BUILD_NATIVE_LEVEL \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-        -DMPERF_ENABLE_OPENCL=${OPENCL} \
-        -DMPERF_ENABLE_ADRENO=${ADRENO} \
-        -DMPERF_ENABLE_MALI=${MALI} \
-        -DMPERF_ENABLE_PFM=${PFM} \
-        -DMPERF_ENABLE_LOGGING=${LOG} 
+        -DMPERF_ENABLE_OPENCL=$OPENCL \
+        -DMPERF_ENABLE_ADRENO=$ADRENO \
+        -DMPERF_ENABLE_MALI=$MALI \
+        -DMPERF_ENABLE_PFM=$PFM \
+        -DMPERF_ENABLE_LOGGING=$LOG \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 
     ninja -v
 }

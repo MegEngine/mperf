@@ -10,14 +10,6 @@ option(MPERF_ENABLE_MALI "build mperf with mali." OFF)
 option(MPERF_ENABLE_PFM "build mperf with pfm." OFF)
 option(MPERF_ENABLE_INSTALL "enable installation of mperf." ON)
 
-# someone maybe want a custom install directory for android cross-compile situation,
-# then you can uncomment this code segment
-#if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-#    if(ANDROID)
-#        set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "default install path on android cross-compile situation" FORCE)
-#    endif()
-#endif()
-
 if(CMAKE_TOOLCHAIN_FILE)
     message(STATUS "cross compile mperf.")
     if(ANDROID_TOOLCHAIN_ROOT)
@@ -80,17 +72,17 @@ if(MPERF_ENABLE_OPENCL)
   list(APPEND SOURCES ${SOURCES_})
 endif()
 
-add_library(mperf_internal ${SOURCES})
+add_library(mperf ${SOURCES})
 
 if(MPERF_ENABLE_OPENCL)
     message(STATUS "mperf build with opencl.")
     set(MPERF_WITH_OPENCL ON)
     add_subdirectory(third_party/opencl-stub)
-    target_include_directories(mperf_internal
+    target_include_directories(mperf
                                PUBLIC
                                $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/opencl-stub/include/>
                                $<INSTALL_INTERFACE:include>)
-    target_link_libraries(mperf_internal PUBLIC $<BUILD_INTERFACE:OpenCL>)
+    target_link_libraries(mperf PUBLIC OpenCL)
 endif()
 if(MPERF_ENABLE_ADRENO)
     message(STATUS "mperf build with adreno.")
@@ -118,79 +110,34 @@ endif()
 
 add_subdirectory(eca/tma)
 target_link_libraries(mperf_tma PRIVATE mperf_xpmu)
-target_include_directories(mperf_internal
+target_include_directories(mperf
                            PUBLIC
                            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>
                            $<INSTALL_INTERFACE:include>)
-target_include_directories(mperf_internal PRIVATE ${PROJECT_SOURCE_DIR}/uarch/gpu/kernels/)
+target_include_directories(mperf PRIVATE ${PROJECT_SOURCE_DIR}/uarch/gpu/kernels/)
 
-target_link_libraries(mperf_internal PUBLIC $<BUILD_INTERFACE:mperf_xpmu>)
-target_link_libraries(mperf_internal PUBLIC $<BUILD_INTERFACE:mperf_tma>)
+target_link_libraries(mperf PUBLIC mperf_xpmu)
+target_link_libraries(mperf PUBLIC mperf_tma)
 
 add_subdirectory(apps)
+
+if(ANDROID)
+    target_link_libraries(mperf PRIVATE log)
+endif()
+
+if(${MPERF_ARCH} STREQUAL "x86")
+    find_package(Threads REQUIRED)
+    target_link_libraries(mperf PRIVATE Threads::Threads)
+endif()
 
 # generate the build config
 set(generate_config_header ${PROJECT_BINARY_DIR}/mperf_build_config.h)
 message(STATUS "the generate_config_header is ${generate_config_header}")
 configure_file("${PROJECT_SOURCE_DIR}/cmake/mperf_build_config.h.in" ${generate_config_header})
-target_include_directories(mperf_internal
+target_include_directories(mperf
                            PUBLIC
                            $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
                            $<INSTALL_INTERFACE:include>)
-
-# about merge internal static libraries
-set(libraries_to_be_merged $<TARGET_FILE:mperf_internal> $<TARGET_FILE:mperf_xpmu> $<TARGET_FILE:mperf_tma>)
-
-if(MPERF_ENABLE_OPENCL)
-    list(APPEND libraries_to_be_merged $<TARGET_FILE:OpenCL>)
-endif()
-
-if(MPERF_ENABLE_PFM)
-    list(APPEND libraries_to_be_merged $<TARGET_FILE:pfm>)
-endif()
-
-if(${MPERF_ARCH} STREQUAL aarch64 AND MPERF_ENABLE_PFM)
-    list(APPEND libraries_to_be_merged $<TARGET_FILE:pfm_aarch64>)
-elseif(${MPERF_ARCH} STREQUAL armv7 AND MPERF_ENABLE_PFM)
-    list(APPEND libraries_to_be_merged $<TARGET_FILE:pfm_armv7>)
-elseif(${MPERF_ARCH} STREQUAL x86 AND MPERF_ENABLE_PFM)
-    list(APPEND libraries_to_be_merged $<TARGET_FILE:pfm_x86>)
-endif()
-
-if (APPLE)
-    message(STATUS "execute libtool -static -o ... for libmperf.a")
-    add_custom_command(OUTPUT libmperf.a
-                       COMMAND libtool -static -o libmperf.a ${libraries_to_be_merged}
-                       DEPENDS mperf_xpmu mperf_tma)
-else()
-    message(STATUS "execute ar crsT ... for libmperf.a")
-    add_custom_command(OUTPUT libmperf.a
-                       COMMAND ar crsT libmperf.a ${libraries_to_be_merged}
-                       DEPENDS mperf_xpmu mperf_tma)
-endif()
-add_custom_target(_merge ALL DEPENDS libmperf.a)
-
-add_library(mperf STATIC IMPORTED GLOBAL)
-set(imported_merged_library_file ${PROJECT_BINARY_DIR}/libmperf.a)
-set_target_properties(mperf PROPERTIES IMPORTED_LOCATION ${imported_merged_library_file})
-
-add_library(mperf_interface_include INTERFACE)
-target_link_libraries(mperf_interface_include INTERFACE $<BUILD_INTERFACE:mperf>)
-target_include_directories(mperf_interface_include 
-                           INTERFACE 
-                           $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
-                           $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>
-                           $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/opencl-stub/include/>
-                           $<INSTALL_INTERFACE:include>)
-
-if(ANDROID)
-    target_link_libraries(mperf_interface_include INTERFACE log)
-endif()
-
-if(${MPERF_ARCH} STREQUAL "x86")
-    find_package(Threads REQUIRED)
-    target_link_libraries(mperf_interface_include INTERFACE Threads::Threads)
-endif()
 
 # about install
 message(STATUS "install mperf")
@@ -204,18 +151,31 @@ set(namespace "${PROJECT_NAME}::")
 
 configure_file("${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in" "${project_config}" @ONLY)
 
+set(targets_to_export mperf mperf_xpmu mperf_tma)
+if(MPERF_ENABLE_OPENCL)
+    list(APPEND targets_to_export OpenCL)
+endif()
+
+if(MPERF_ENABLE_PFM)
+    list(APPEND targets_to_export pfm)
+endif()
+
+if(${MPERF_ARCH} STREQUAL aarch64 AND MPERF_ENABLE_PFM)
+    list(APPEND targets_to_export pfm_aarch64)
+elseif(${MPERF_ARCH} STREQUAL armv7 AND MPERF_ENABLE_PFM)
+    list(APPEND targets_to_export pfm_armv7)
+elseif(${MPERF_ARCH} STREQUAL x86 AND MPERF_ENABLE_PFM)
+    list(APPEND targets_to_export pfm_x86)
+endif()
+
 if(MPERF_ENABLE_INSTALL)
     install(
-        TARGETS mperf_interface_include
+        TARGETS ${targets_to_export}
         EXPORT ${targets_export_name}
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include)
-
-    install(
-        FILES "${imported_merged_library_file}"
-        DESTINATION lib)
 
     install(
         DIRECTORY "${PROJECT_SOURCE_DIR}/include/mperf"

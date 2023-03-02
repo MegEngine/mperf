@@ -42,7 +42,7 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
         ```
     * 构建支持 arm aarch64 cpu 的 mperf
         ```bash
-        ./android_build.sh -m arm64-v8a
+        ./android_build.sh [-m arm64-v8a] // default is arm64-v8a
         ```
     * 构建支持 mali gpu 的 mperf
         ```bash
@@ -60,6 +60,10 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
         ```bash
         ./android_build.sh -d [arm64-v8a, armeabi-v7a]
         ```
+    * 设置自定义的cmake_install_prefix
+        ```bash
+        ./android_build.sh -i /your/custom/cmake/install/prefix
+        ```
 * 如果你的试验平台是 Linux X86，你可以开启 pfm 支持进行构建：
     ```bash
     cmake -S . -B "build-x86" -DMPERF_ENABLE_PFM=ON
@@ -71,10 +75,9 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
     ```
 * 至此，你可以使用 CMake `find_package` 命令导入安装好的mperf，操作如下：
     ```bash
-    # set(mperf_DIR /path/to/your/installed/mperfConfig.cmake) # uncomment it if cannot find mperfConfig.cmake
+    set(mperf_DIR /path/to/your/installed/mperfConfig.cmake) # Note, it's the dirname of mperfConfig.cmake
     find_package(mperf REQUIRED)
-    target_link_libraries(your_target PRIVATE mperf::mperf_interface_include)
-    target_link_libraries(your_target PRIVATE "/path/to/your/installed/libmperf.a")
+    target_link_libraries(your_target mperf::mperf)
     ```
 * 当然，你也可以直接在你的项目中源码集成  mperf，并用 `add_subdirectory(mperf)` 命令引入对 mperf 的编译依赖。
 
