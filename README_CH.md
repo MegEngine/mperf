@@ -23,6 +23,7 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
 * 下载 repo 代码：
     ```bash
     git clone https://github.com/MegEngine/mperf.git
+    git submodule update --init --recursive
     ```
 * 请选择一个试验平台
     - 如果你是在一个安卓手机平台进行试验
@@ -42,7 +43,7 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
         ```
     * 构建支持 arm aarch64 cpu 的 mperf
         ```bash
-        ./android_build.sh [-m arm64-v8a] // default is arm64-v8a
+        ./android_build.sh [-m arm64-v8a] // default march is arm64-v8a
         ```
     * 构建支持 mali gpu 的 mperf
         ```bash
@@ -62,7 +63,8 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
         ```
     * 设置自定义的cmake_install_prefix
         ```bash
-        ./android_build.sh -i /your/custom/cmake/install/prefix
+        ./android_build.sh -i /your/custom/cmake/install/prefix [arm64-v8a, armeabi-v7a]
+        e.g.: ./android_build.sh -i ~/mperf_install [-m arm64-v8a]  // default march is arm64-v8a
         ```
 * 如果你的试验平台是 Linux X86，你可以开启 pfm 支持进行构建：
     ```bash
@@ -72,14 +74,15 @@ mperf 支持 CMake 编译，要求 CMake 版本不低于 3.15.2，可以遵照�
 * 构建完成之后，一些可执行文件会被转存到 build_dir/apps 目录下。同时，你也可以将编译好的mperf安装到系统目录或者自定义的安装目录下
     ```bash
     cmake --build <mperf_build_dir> --target install
+    e.g.: cmake --build ./build-arm64-v8a/ --target install
     ```
 * 至此，你可以使用 CMake `find_package` 命令导入安装好的mperf，操作如下：
     ```bash
-    set(mperf_DIR /path/to/your/installed/mperfConfig.cmake) # Note, it's the dirname of mperfConfig.cmake
+    set(mperf_DIR /path/to/your/installed/mperfConfig.cmake) # Note, it's the dirname of mperfConfig.cmake,  e.g. set(mperf_DIR ~/mperf_install/lib/cmake/mperf/)
     find_package(mperf REQUIRED)
     target_link_libraries(your_target mperf::mperf)
     ```
-* 当然，你也可以直接在你的项目中源码集成  mperf，并用 `add_subdirectory(mperf)` 命令引入对 mperf 的编译依赖。
+* 当然，你也可以直接在你的项目中源码集成 mperf，并用 `add_subdirectory(mperf)` 命令引入对 mperf 的编译依赖。
 
 ## 使用样例
 * mperf xpmu 模块的基础使用样例：
