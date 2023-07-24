@@ -224,9 +224,9 @@ static bool is_valid_path_for_dlopen(const char* path) {
     if (strstr(path, ".framework") != NULL) {
         return true;
     }
-    return access(path, F_OK);
+    return !access(path, F_OK);
 #else
-    return access(path, F_OK);
+    return !access(path, F_OK);
 #endif
 }
 
