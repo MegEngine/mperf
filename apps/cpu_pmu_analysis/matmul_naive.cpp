@@ -47,9 +47,10 @@ void gettma(int m, int n, int k) {
     const size_t buf_size_a = m * k * sizeof(float);
     const size_t buf_size_b = k * n * sizeof(float);
     const size_t buf_size_c = m * n * sizeof(float);
-    float* a = (float*)memalign(4096, buf_size_a);
-    float* b = (float*)memalign(4096, buf_size_b);
-    float* c = (float*)memalign(4096, buf_size_c);
+    float *a, *b, *c;
+    posix_memalign((void**)&a, 4096, buf_size_a);
+    posix_memalign((void**)&b, 4096, buf_size_b);
+    posix_memalign((void**)&c, 4096, buf_size_c);
 
     for (int i = 0; i < m * k; i++)
         a[i] = (float)(rand() % 10);

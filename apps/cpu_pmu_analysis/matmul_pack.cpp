@@ -49,7 +49,8 @@ void my_matmul_naive(int m, int n, int k, float* a, int lda, float* b, int ldb,
 }
 float check(float* a, float* b, float* c, int m, int n, int k) {
     const size_t buf_size = m * n * sizeof(float);
-    float* ans = (float*)memalign(4096, buf_size);
+    float* ans;
+    posix_memalign((void**)&ans, 4096, buf_size);
     memset(ans, 0, m * n * sizeof(float));
     my_matmul_naive(m, n, k, a, k, b, n, ans, n);
     float max_err = -1e6;
@@ -594,9 +595,10 @@ void gettma(int m, int n, int k) {
     const size_t buf_size_a = m * k * sizeof(float);
     const size_t buf_size_b = k * n * sizeof(float);
     const size_t buf_size_c = m * n * sizeof(float);
-    float* a = (float*)memalign(4096, buf_size_a);
-    float* b = (float*)memalign(4096, buf_size_b);
-    float* c = (float*)memalign(4096, buf_size_c);
+    float* a, *b, *c;
+    posix_memalign((void**)&a, 4096, buf_size_a);
+    posix_memalign((void**)&b, 4096, buf_size_b);
+    posix_memalign((void**)&c, 4096, buf_size_c);
 
     for (int i = 0; i < m * k; i++)
         a[i] = (float)(rand() % 10 + rand() % 5);

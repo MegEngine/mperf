@@ -1,9 +1,7 @@
 file(GLOB_RECURSE SOURCES tma.cpp arch_ratios/arch_ratios.cpp)
 
-if(ANDROID)
-    file(GLOB_RECURSE SOURCES_ arch_ratios/a5*_ratios.cpp)
-    list(APPEND SOURCES ${SOURCES_})
-endif()
+file(GLOB_RECURSE SOURCES_ arch_ratios/a5*_ratios.cpp)
+list(APPEND SOURCES ${SOURCES_})
 
 if(${MPERF_ARCH} STREQUAL x86)
     file(GLOB_RECURSE SOURCES_ arch_ratios/hsx_server_ratios.cpp)
